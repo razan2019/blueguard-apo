@@ -1,6 +1,4 @@
 import streamlit as st
-import streamlit as st
-
 # 1️⃣ شريط التنقل الجانبي
 with st.sidebar:
     st.title("📍 التنقل في المنصة")
@@ -294,6 +292,30 @@ with tab3:
         st.metric("درجة الأمان", f"{curr['safety_score']}%")
     with col_s2:
         st.metric("ارتفاع الموج", f"{curr['wave_height']} m")
+    with col_s3:
+        st.metric("سرعة الرياح", f"{curr['wind_speed']} km/h")
+
+    if curr["safety_score"] >= 80:
+        st.success(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
+    elif curr["safety_score"] >= 50:
+        st.warning(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
+    else:
+        st.error(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
+
+# ----- التبويب الرابع: التحليلات -----
+with tab4:
+    st.subheader(t["tab_analytics"])
+    chart_data = pd.DataFrame({
+        'الأيام': ['الخميس', 'الجمعة', 'السبت', 'الأحد', 'الإثنين'],
+        'حجم الصيد المتوقع (طن)': [25, 22, 15, 18, 12]
+    })
+    st.bar_chart(chart_data.set_index('الأيام'))
+
+# ----- التبويب الخامس: المساعد الذكي -----
+with tab5:
+    st.subheader(t["tab_chat"])
+    st.text_input("أدخل سؤالك للذكاء الاصطناعي:")
+    st.button("إرسال 🚀")
     with col_s3:
         st.metric("سرعة الرياح", f"{curr['wind_speed']} km/h")
 
