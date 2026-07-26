@@ -340,5 +340,5 @@ with tab4:
 # ----- التبويب الخامس: المساعد الذكي -----
 with tab5:
     st.subheader(t["tab_chat"])
-    st.text_input("أدخل سؤالك للذكاء الاصطناعي:")
+    st.text_input("أدخل سؤالك للذكاء الاصطناعي:",key="chat_input_unique" )
     st.button("إرسال 🚀")
