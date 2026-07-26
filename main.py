@@ -341,4 +341,4 @@ with tab4:
 with tab5:
     st.subheader(t["tab_chat"])
     st.text_input("أدخل سؤالك للذكاء الاصطناعي:",key="chat_input_unique" )
-    st.button("إرسال 🚀")
+   st.button("إرسال 🚀", key="unique_send_button_chat")
