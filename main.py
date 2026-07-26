@@ -1,299 +1,169 @@
 import streamlit as st
 import pandas as pd
-import os
 
 # 1️⃣ إعدادات الصفحة الأساسية
 st.set_page_config(
-    page_title="BlueGuard AI | منصة حماية البيئة البحرية",
+    page_title="BlueGuard AI | منصة البيئة البحرية وحرس الحدود",
     page_icon="🌊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# 2️⃣ التنسيق البرمجي الشامل (CSS البحري مع الأزرار الشفافة والأنيقة)
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-
-* {
-    font-family: "Cairo", sans-serif !important;
-}
-
-/* خلفية التطبيق البحرية العملاقة */
-.stApp {
-    background: linear-gradient(rgba(10, 25, 47, 0.75), rgba(15, 32, 67, 0.82)), 
-                url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073") no-repeat center center fixed !important;
-    background-size: cover !important;
-    color: #ffffff !important;
-}
-
-/* 🌟 تنسيق القائمة الجانبية (Sidebar) */
-section[data-testid="stSidebar"] {
-    background: rgba(10, 25, 47, 0.65) !important;
-    backdrop-filter: blur(15px) !important;
-    border-right: 1px solid rgba(0, 180, 216, 0.3) !important;
-}
-
-/* 🔵 تنسيق الأزرار (Buttons) */
-.stButton > button {
-    background: linear-gradient(135deg, #0077b6, #00b4d8) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 20px !important;
-    padding: 10px 25px !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
-    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3) !important;
-    transition: all 0.3s ease !important;
-}
-
-.stButton > button:hover {
-    background: linear-gradient(135deg, #0096c7, #48cae4) !important;
-    transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 8px 20px rgba(0, 180, 216, 0.5) !important;
-}
-
-/* 💎 بطاقات المؤشرات الزجاجية */
-div[data-testid="stMetric"], .stCard {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(14px) !important;
-    border-radius: 20px !important;
-    padding: 22px !important;
-    border: 1px solid rgba(72, 202, 228, 0.25) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-    transition: all 0.3s ease !important;
-}
-
-div[data-testid="stMetric"]:hover {
-    transform: translateY(-6px) !important;
-    border-color: #48cae4 !important;
-    box-shadow: 0 12px 35px rgba(0, 180, 216, 0.35) !important;
-}
-
-div[data-testid="stMetricLabel"] {
-    color: #caf0f8 !important;
-    font-size: 17px !important;
-    font-weight: 600 !important;
-}
-
-div[data-testid="stMetricValue"] {
-    color: #90e0ef !important;
-    font-size: 36px !important;
-    font-weight: 800 !important;
-    text-shadow: 0 0 12px rgba(144, 224, 239, 0.5) !important;
-}
-
-/* 🏄‍♂️ تنسيق التبويبات (Tabs) */
-button[data-baseweb="tab"] {
-    background: rgba(255, 255, 255, 0.06) !important;
-    border-radius: 12px 12px 0 0 !important;
-    color: #e0f7fa !important;
-    font-size: 16px !important;
-    padding: 12px 22px !important;
-    border: none !important;
-    margin-right: 6px !important;
-}
-
-button[aria-selected="true"] {
-    background: linear-gradient(135deg, #0077b6, #00b4d8) !important;
-    color: white !important;
-    font-weight: bold !important;
-    box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4) !important;
-}
-
-/* الهيدر الرئيسي */
-.hero-box {
-    width: 100%;
-    margin: 10px auto 25px auto;
-    padding: 30px;
-    text-align: center;
-    background: rgba(10, 25, 47, 0.5);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(72, 202, 228, 0.3);
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-.hero-box h1 {
-    font-size: 40px;
-    color: #90e0ef;
-    margin-bottom: 10px;
-    font-weight: 800;
-}
-
-.hero-box p {
-    font-size: 18px;
-    color: #caf0f8;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# 3️⃣ نصوص اللغات (العربية والإنجليزية)
-TEXTS = {
-    "ar": {
-        "title": "🌊 منصة BlueGuard AI",
-        "title_desc": "منصة ذكية متكاملة لحماية البيئة البحرية، دعم التنبؤ بالصيد، وتعزيز سلامة الصيادين نطقاً وبصرياً",
-        "settings_title": "⚙️ الإعدادات وسهولة الاستخدام",
-        "tts_toggle": "🔊 تفعيل القارئ الصوتي التلقائي (للصيادين)",
-        "lang_select": "🌐 اختر اللغة / Select Language:",
-        "select_zone": "📍 اختر القطاع البحري:",
-        "tab_sea_health": "🌱 صحة البحر",
-        "tab_predict": "🎧 التنبؤ بالصيد",
-        "tab_safety": "🛡️ السلامة والمخاطر",
-        "tab_analytics": "📊 التحليلات",
-        "tab_chat": "💬 المساعد الذكي"
-    },
-    "en": {
-        "title": "🌊 BlueGuard AI Platform",
-        "title_desc": "Integrated AI platform for marine conservation, fishing prediction, and fisher safety.",
-        "settings_title": "⚙️ Settings & Accessibility",
-        "tts_toggle": "🔊 Enable Automatic Voice Reader (For Fishers)",
-        "lang_select": "🌐 Select Language / اختر اللغة:",
-        "select_zone": "📍 Select Sector:",
-        "tab_sea_health": "🌱 Sea Health",
-        "tab_predict": "🎧 Fishing Prediction",
-        "tab_safety": "🛡️ Safety & Risks",
-        "tab_analytics": "📊 Analytics",
-        "tab_chat": "💬 Smart AI Assistant"
-    }
-}
-
-# 4️⃣ القاموس الموحد للمواقع
-locations_data = {
-    "القطاع الجنوبي (جازان / فرسان)": {
-        "lat": 16.8892, "lon": 42.5511,
-        "temp": "28.8 °C", "ox": "5.9 mg/L", "ch": "1.8 µg/L", "temp_diff": "+0.5°C",
-        "wave_height": 0.8, "wind_speed": 12,
-        "risk_level": "آمنة ومناسبة للإبحار 🟢", "safety_score": 92,
-        "advice": "الأحوال الجوية هادئة في سواحل جازان وفرسان، ينصح بالصيد الطبيعي."
-    },
-    "القطاع الأوسط (جدة / رابغ)": {
-        "lat": 21.5433, "lon": 39.1728,
-        "temp": "26.5 °C", "ox": "6.2 mg/L", "ch": "1.2 µg/L", "temp_diff": "+0.1°C",
-        "wave_height": 1.8, "wind_speed": 22,
-        "risk_level": "تحذير: أمواج متوسطة 🟡", "safety_score": 61,
-        "advice": "ارتفاع الأمواج متوسط بالقرب من الشاطئ، يرجى توخي الحذر."
-    },
-    "القطاع الشمالي (نيوم / تبوك)": {
-        "lat": 28.3833, "lon": 34.5667,
-        "temp": "23.1 °C", "ox": "7.4 mg/L", "ch": "0.9 µg/L", "temp_diff": "-0.2°C",
-        "wave_height": 2.5, "wind_speed": 30,
-        "risk_level": "خطر: رياح شديدة 🔴", "safety_score": 35,
-        "advice": "لا ينصح بالإبحار اليوم لارتفاع الرياح والأمواج في القطاع الشمالي."
-    }
-}
-
-# التهيئة
-if "selected_zone" not in st.session_state:
-    st.session_state["selected_zone"] = "القطاع الجنوبي (جازان / فرسان)"
-if "current_loc" not in st.session_state:
-    st.session_state["current_loc"] = locations_data["القطاع الجنوبي (جازان / فرسان)"]
-
-# 5️⃣ الشريط الجانبي (تحكم باللغة والصوت والقطاع)
+# 2️⃣ القائمة الجانبية واختيار الصفحة
 with st.sidebar:
-    st.image("https://img.icons8.com/color/96/000000/sea-waves.png", width=70)
-    st.title("🎛️ القائمة الرئيسية")
+    st.image("https://img.icons8.com/color/96/000000/water-element.png", width=70)
+    st.title("📍 التنقل في المنصة")
     
-    # اختيار اللغة
-    lang_choice = st.radio("🌐 Language / اللغة:", ["العربية (Arabic)", "English"], index=0)
-    lang = "ar" if "العربية" in lang_choice else "en"
-    t = TEXTS[lang]
-    
-    st.markdown("---")
-    st.subheader(t["settings_title"])
-    
-    # خيار القارئ الصوتي
-    enable_tts = st.toggle(t["tts_toggle"], value=True)
-    
-    st.markdown("---")
-    # اختيار القطاع
-    selected_sidebar_zone = st.selectbox(
-        t["select_zone"],
-        options=list(locations_data.keys()),
-        index=list(locations_data.keys()).index(st.session_state["selected_zone"])
+    # اختيار الصفحة
+    page = st.radio(
+        "📑 اختر الصفحة المطلوبة:", 
+        ["الرئيسية (Home)", "حرس الحدود (Border Guard)"]
     )
-    st.session_state["selected_zone"] = selected_sidebar_zone
-    st.session_state["current_loc"] = locations_data[selected_sidebar_zone]
-
-# 6️⃣ رأس الصفحة Dynamic Header
-st.markdown(f"""
-<div class="hero-box">
-    <h1>{t['title']}</h1>
-    <p>{t['title_desc']}</p>
-</div>
-""", unsafe_allow_html=True)
-
-curr = st.session_state["current_loc"]
-
-# 7️⃣ التبويبات الرئيسية
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    t["tab_sea_health"],
-    t["tab_predict"],
-    t["tab_safety"],
-    t["tab_analytics"],
-    t["tab_chat"]
-])
-
-# ----- التبويب الأول: صحة البحر -----
-with tab1:
-    st.subheader(t["tab_sea_health"])
     
-    # مشغل صوتي تجريبي إذا كان الخيار مفعلاً
-    if enable_tts:
-        st.info("🔊 القارئ الصوتي مفعّل: جاري قراءة مؤشرات صحة البحر تلقائياً...")
+    st.markdown("---")
+
+# ==========================================
+# 🏠 الصفحة الأولى: الرئيسية (Home)
+# ==========================================
+if page == "الرئيسية (Home)":
     
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.metric("حرارة المياه", curr["temp"], delta=curr["temp_diff"])
-    with c2:
-        st.metric("الأكسجين المذاب", curr["ox"])
-    with c3:
-        st.metric("الكلوروفيل", curr["ch"])
+    # CSS الصفحة الرئيسية
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    * { font-family: "Cairo", sans-serif !important; }
+    .stApp {
+        background: linear-gradient(rgba(10, 25, 47, 0.85), rgba(15, 32, 67, 0.9)), 
+                    url("https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=2070") no-repeat center center fixed !important;
+        background-size: cover !important;
+        color: #ffffff !important;
+    }
+    div[data-testid="stMetric"] {
+        background: rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 20px !important;
+        padding: 20px !important;
+        border: 1px solid rgba(72, 202, 228, 0.3) !important;
+    }
+    .hero-title {
+        text-align: center;
+        background: rgba(10, 25, 47, 0.6);
+        padding: 25px;
+        border-radius: 20px;
+        border: 1px solid rgba(72, 202, 228, 0.3);
+        margin-bottom: 25px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    map_df = pd.DataFrame({'lat': [curr["lat"]], 'lon': [curr["lon"]]})
-    st.map(map_df)
+    st.markdown("""
+    <div class="hero-title">
+        <h1 style="color: #90e0ef; font-weight: 800;">🌊 منصة BlueGuard AI لحماية البيئة البحرية</h1>
+        <p style="color: #caf0f8; font-size: 18px;">الرصد الذكي للتلوث وتحليل صحة الأحياء البحرية بواسطة الذكاء الاصطناعي</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ----- التبويب الثاني: التنبؤ بالصيد -----
-with tab2:
-    st.subheader(t["tab_predict"])
-    st.success(f"📌 {st.session_state['selected_zone']} | ({curr['lat']}, {curr['lon']})")
+    # مؤشرات سريعة
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("درجة حرارة البحر", "28.8 °C", "+0.5 °C")
+    with col2:
+        st.metric("مستوى الأكسجين الذائب", "6.4 mg/L", "طبيعي 🟢")
+    with col3:
+        st.metric("مؤشر صحة البيئة البحرية", "88%", "ممتاز 🌊")
+
+    st.markdown("---")
+    st.subheader("📊 نظرة عامة على البيانات")
+    st.write("أهلاً بك في الصفحة الرئيسية لمنصة BlueGuard AI. يمكنك التنقل لصفحة **حرس الحدود** من القائمة الجانبية باليسار.")
+
+
+# ==========================================
+# 🛡️ الصفحة الثانية: حرس الحدود (Border Guard)
+# ==========================================
+else:
     
-    st.button("🔍 تحليل جودة الصيد اللحظي")
-    map_data = pd.DataFrame({'lat': [curr["lat"]], 'lon': [curr["lon"]]})
-    st.map(map_data)
+    # CSS صفحة حرس الحدود
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    * { font-family: "Cairo", sans-serif !important; }
+    .stApp {
+        background: linear-gradient(rgba(10, 25, 47, 0.8), rgba(15, 32, 67, 0.88)), 
+                    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073") no-repeat center center fixed !important;
+        background-size: cover !important;
+        color: #ffffff !important;
+    }
+    .stButton > button {
+        background: linear-gradient(135deg, #0077b6, #00b4d8) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 20px !important;
+        padding: 10px 25px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3) !important;
+    }
+    div[data-testid="stMetric"] {
+        background: rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(14px) !important;
+        border-radius: 20px !important;
+        padding: 22px !important;
+        border: 1px solid rgba(72, 202, 228, 0.25) !important;
+    }
+    .hero-box {
+        text-align: center;
+        background: rgba(10, 25, 47, 0.6);
+        padding: 25px;
+        border-radius: 25px;
+        border: 1px solid rgba(72, 202, 228, 0.3);
+        margin-bottom: 25px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# ----- التبويب الثالث: السلامة والمخاطر -----
-with tab3:
-    st.subheader(t["tab_safety"])
-    st.caption(f"📍 {st.session_state['selected_zone']}")
-    st.progress(curr["safety_score"], text=f"مستوى الأمان: {curr['safety_score']}%")
+    st.markdown("""
+    <div class="hero-box">
+        <h1 style="color: #90e0ef; font-weight: 800;">🛡️ بوابـة حـرس الحـدود والرقابـة الميدانيـة</h1>
+        <p style="color: #caf0f8; font-size: 18px;">منظومة المراقبة والتحليل الذكي لردع الصيد غير القانوني ومتابعة بلاغات السلامة البحرية</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    col_s1, col_s2, col_s3 = st.columns(3)
-    with col_s1:
-        st.metric("درجة الأمان", f"{curr['safety_score']}%")
-    with col_s2:
-        st.metric("ارتفاع الموج", f"{curr['wave_height']} m")
-    with col_s3:
-        st.metric("سرعة الرياح", f"{curr['wind_speed']} km/h")
+    # بيانات قطاعات الرقابة
+    sectors_data = {
+        "قطاع جازان وفرسان (الحدود الجنوبية)": {"lat": 16.8892, "lon": 42.5511, "active_boats": 14, "alerts_today": 2, "status": "مستقر 🟢"},
+        "قطاع جدة ورابغ (المنطقة الوسطى)": {"lat": 21.5433, "lon": 39.1728, "active_boats": 22, "alerts_today": 5, "status": "مراقبة مكثفة 🟡"},
+        "قطاع نيوم وتبوك (الحدود الشمالية)": {"lat": 28.3833, "lon": 34.5667, "active_boats": 9, "alerts_today": 1, "status": "مستقر 🟢"}
+    }
 
-    if curr["safety_score"] >= 80:
-        st.success(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
-    elif curr["safety_score"] >= 50:
-        st.warning(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
-    else:
-        st.error(f"**حالة القطاع:** {curr['risk_level']}\n\n💡 {curr['advice']}")
+    selected_sector = st.selectbox("🚨 اختر مركز الرقابة / القطاع:", options=list(sectors_data.keys()))
+    sec_info = sectors_data[selected_sector]
 
-# ----- التبويب الرابع: التحليلات -----
-with tab4:
-    st.subheader(t["tab_analytics"])
-    chart_data = pd.DataFrame({
-        'الأيام': ['الخميس', 'الجمعة', 'السبت', 'الأحد', 'الإثنين'],
-        'حجم الصيد المتوقع (طن)': [25, 22, 15, 18, 12]
-    })
-    st.bar_chart(chart_data.set_index('الأيام'))
+    # تبويبات حرس الحدود
+    tab1, tab2, tab3 = st.tabs(["📡 الرقابة المباشرة", "📸 التحليل البصري (AI)", "📋 البلاغات والإنذارات"])
 
-# ----- التبويب الخامس: المساعد الذكي -----
-with tab5:
-    st.subheader(t["tab_chat"])
-    st.text_input("أدخل سؤالك للذكاء الاصطناعي:")
-    st.button("إرسال 🚀")
+    with tab1:
+        st.subheader("📡 التتبع والرقابة الحية")
+        m1, m2, m3 = st.columns(3)
+        with m1: st.metric("حالة القطاع", sec_info["status"])
+        with m2: st.metric("قوارب الدورية النشطة", f"{sec_info['active_boats']} قارب")
+        with m3: st.metric("إنذارات اليوم", f"{sec_info['alerts_today']} بلاغات")
+        
+        st.markdown("### 🗺️ موقع القطاع البحري")
+        st.map(pd.DataFrame({'lat': [sec_info["lat"]], 'lon': [sec_info["lon"]]}))
+
+    with tab2:
+        st.subheader("📸 التحليل البصري للذكاء الاصطناعي")
+        uploaded_img = st.file_uploader("رفع صورة لوسيلة صيد أو قارب للتحليل:", type=['png', 'jpg', 'jpeg'])
+        if uploaded_img:
+            st.image(uploaded_img, caption="الصورة المرصودة", width=350)
+            if st.button("🔍 بدء التحليل والأمان"):
+                st.success("✅ تم التحليل: لا توجد أدوات صيد محظورة متطابقة مع الصورة.")
+
+    with tab3:
+        st.subheader("📋 البلاغات والإنذارات الحالية")
+        reports_df = pd.DataFrame({
+            "رقم البلاغ": ["#1082", "#1083", "#1084"],
+            "القطاع": ["جازان", "جدة", "تبوك"],
+            "نوع البلاغ": ["دخول منطقة محمية", "طلب استغاثة موج مرتفع", "صيد بدون تصريح"],
+            "الحالة": ["تمت الاستجابة 🟢", "قيد المتابعة 🟡", "مغلق ⚪"]
+        })
+        st.dataframe(reports_df, use_container_width=True)
